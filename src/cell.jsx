@@ -1,8 +1,22 @@
 import gameProvider from "./gameContext";
 
-export default function Cell({ card, index, isFlipped, matched }) {
-  const { flipCard } = gameProvider.useContext();
+export default function Cell({ card, index }) {
+  const { flipCard, flippedCards, matchedCards } = gameProvider.useContext();
 
+  const isFlipped = flippedCards.includes(index);
+  const isMatched = matchedCards.includes(index);
+  function tryFlipCard() {
+    //we are not allowed to flip if a card has already been matched
+    //or if it is already flipped
+
+    if (isFlipped || isMatched) {
+      //prevent interaction
+      console.log("Sorry you cant do that - card is already flipped/matched");
+    } else {
+      flipCard(index);
+    }
+  }
+  //}
   return (
     <div
       //explanation about the ? symbol
@@ -17,11 +31,11 @@ export default function Cell({ card, index, isFlipped, matched }) {
       //we also need to define what happens when the card is matched
 
       className={`cell ${isFlipped ? "flipped" : ""} ${
-        matched ? "matched" : ""
+        isMatched ? "matched" : ""
       }`}
-      onClick={() => flipCard(index)}
+      onClick={tryFlipCard}
     >
-      {isFlipped ? card : "?"}
+      {isFlipped || isMatched ? card : "?"}
     </div>
   );
 }

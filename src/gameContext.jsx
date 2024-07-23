@@ -1,4 +1,10 @@
-import { Children, createContext, useContext, useState } from "react";
+import {
+  Children,
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+} from "react";
 /**State
  * Cards, flippedCards, matchedCards, attempts, gameStatus, disabled
  * array for flipped?
@@ -13,11 +19,25 @@ export default function GameProvider({ children }) {
   const [cards, setCards] = useState([]);
   const [flippedCards, setFlippedCards] = useState([]);
   const [matchedCards, setMatchedCards] = useState([]);
-  let attempts = 0;
-  //const [attempts, setAttempts] = useState(0);
+  const [attempts, setAttempts] = useState(0);
   //const [gameStatus, setGameStatus] = useState("gameStillGoing");
   //const [disabled, setDisabled] = useState(false);
-  //const [isFlipped, setIsFlipped] = useState(false);
+
+  // One use of useEffect is to listen for changes in state and react to it
+  // This useEffect will checkForMatch whenever flippedCards is updated
+  useEffect(() => {
+    if (flippedCards.length === 2) {
+      checkForMatch(); // what if we passed this flippedCards as an argument to checkForMatch?;
+      //setTimeout / setInterval methods for the cards to flip back after a certain amount of time
+    }
+  }, [flippedCards]);
+
+  //
+  useEffect(() => {
+    if (matchedCards.length === cards.length) {
+      console.debug(`game Over :0 it took you ${attempts} tries`);
+    }
+  }, [matchedCards]);
 
   /**Modify State
    *  incrementAttempts - we want the count to go up by 1 every time user makes a move
@@ -27,7 +47,7 @@ export default function GameProvider({ children }) {
    * handleAttempt handles the nuance
    */
   function incrementAttempts(n) {
-    attempts++;
+    setAttempts(attempts + 1);
   }
 
   function generateCards() {
@@ -61,9 +81,6 @@ export default function GameProvider({ children }) {
       setMatchedCards([...matchedCards, ...flippedCards]);
     }
     setFlippedCards([]);
-    if (matchedCards.length === cards.length) {
-      console.debug(`game Over :0 it took you ${attempts} tries`);
-    }
   }
 
   function flipCard(index) {
@@ -76,18 +93,19 @@ export default function GameProvider({ children }) {
   }
   */
     setFlippedCards([...flippedCards, index]); //this line sets the flipped cards to the index of the card that was clicked
-
-    if (flippedCards.length === 2) {
-      checkForMatch(); // what if we passed this flippedCards as an argument to checkForMatch?;
-      //setTimeout / setInterval methods for the cards to flip back after a certain amount of time
-    }
     console.log("card flipped");
-    isFlipped = true;
     console.log(flippedCards);
 
     //tenary operator here? to define what kind of behavior we want when the card is flipped?
   }
-  const value = { cards, generateCards, flipCard };
+  const value = {
+    cards,
+    generateCards,
+    flipCard,
+    flippedCards,
+    matchedCards,
+    attempts,
+  };
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
 }
 //===hook get things from context
