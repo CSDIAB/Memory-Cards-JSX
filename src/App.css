@@ -1,0 +1,26 @@
+.cards {
+    width: fit-content;
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    margin: 1rem;
+    border: 1px solid black;
+}
+  
+  .cell {
+    border: 1px solid black;
+    width: 2rem;
+    height: 2rem;
+  
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.cell{
+    border: solid 1px blue;
+    background-color:cornsilk;
+    display: flex;
+    margin:1rem;
+    padding: 1rem;
+    flex-direction: row;
+    
+}
